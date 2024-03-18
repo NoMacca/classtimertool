@@ -29,7 +29,7 @@
         (if (h/ended? now end)
           (do
             (re-frame/dispatch [:kill-timer id])
-            ;; (js/alert (str name " has finished"))
+            (js/alert (str name " has finished"))
             )
           )
 
@@ -91,7 +91,7 @@
                  {:hours 0 :minutes 30 :seconds 0}
                  {:hours 0 :minutes 40 :seconds 0}
                  ]]
-     [:button.bg-white.shadow-md.rounded-full.flex.items-center.justify-center.h-24.w-24.hover:bg-blue-700
+     [:button.bg-white.shadow-md.rounded-full.flex.items-center.justify-center.h-24.w-24.active:bg-blue-700
       {
        :on-click #(re-frame/dispatch [:running-quick-timer length])
        :key (str length)}

@@ -26,7 +26,7 @@
       name]]]
    [:div.col-start-3 (str (h/time-string :hours-minutes start) "-" (h/time-string :hours-minutes end))]
    [:div.col-start-4 (str (h/time-string :minutes length) " mins")]
-   [:div.col-start-5 [:button {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]
+   [:div.col-start-5.flex.items-center.justify-end [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]
    ]
   )
 
