@@ -54,7 +54,6 @@
 
 
 ;; -- Local Storage  ----------------------------------------------------------
-
 (def ls-key "local-store-classes")                         ;; localstore key
 
 (defn classtimertool->local-store
