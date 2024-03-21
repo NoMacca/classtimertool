@@ -18,7 +18,9 @@
            ;; :font-family "Arial, sans-serif"
            :margin "0"
            :padding "0"}]
-   [:p {:color :red}]])
+   ;; [:p {:color :red}]
+
+   ])
 
 
 (symbol (str (name "default") "-factory$"))

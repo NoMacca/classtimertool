@@ -1,11 +1,10 @@
 (ns classtimertool.views.timer
   (:require
    [re-frame.core :as re-frame]
-   [tools.viewtools :as vt]
-   [tools.reframetools :as h]
+   [classtimertool.toolsview :as vt]
+   [classtimertool.toolsreframe :as h]
    [cljs.pprint :as pp]
    [classtimertool.stylesgarden :as gstyle]
-   ;; [reagent.core :as r]
    [reagent.core  :as reagent]
    [classtimertool.db :as db]
    ))
@@ -17,100 +16,164 @@
 
 (defonce do-timer (js/setInterval dispatch-timer-event 1000))
 
-(defn timer [{:keys [id name start end length]}]
-      (let [now @(re-frame/subscribe [:now])
-            length-str (h/time-string :minutes length)
-            time-used-mins-str (h/time-string :minutes (h/time-used now start))
-            start-str (h/time-string :hours-minutes-seconds start)
-            end-str (h/time-string :hours-minutes-seconds end)
-            time-used-str (h/time-string :minutes-seconds (h/time-used now start))
-            time-left-str (h/time-string :minutes-seconds (h/time-left now end))]
+(defn timer [now {:keys [id name start end]}]
+  (let [length (h/duration start end)
+        time-used (h/time-used now start)
+        time-left (h/time-left now end)
 
-        (if (h/ended? now end)
-          (do
-            (re-frame/dispatch [:kill-timer id])
-            (js/alert (str name " has finished"))
-            )
-          )
+        ;;Above progress bar
+        time-used-str (h/duration->string time-used)
+        length-str (h/duration->minutes->string length)
+        time-left-str (h/duration->string time-left)
 
-        (if (h/running? now start end)
-          [:div.grid.grid-cols-3.p-6.m-4.rounded-xl.shadow-lg.items-center
-           [:div.col-start-1.col-span-2 [:h2.font-bold name " for " length-str " min"]]
-           [:div.col-start-3.text-right [:button.w-6.h-6.rounded.bg-cyan-200.hover:bg-blue-700
-                                         {:on-click #(re-frame/dispatch [:kill-timer id])}
-                                         "X"]]
-           [:div.col-start-1 "Used: " time-used-str]
-           [:div.col-start-3.text-right "Left: " time-left-str]
+        ;; For progress bar
+        progress-bar-length-str (h/duration->seconds->string length)
+        progress-bar-time-used-str (h/duration->seconds->string time-used)
 
-           [:div.col-start-1.col-span-3.bg-blue-50
-            [:progress.w-full.h-6 {:value time-used-mins-str :max length-str }]]
+        ;; Below progress bar
+        start-str (h/twelve-hour-time start)
+        now-str (h/twelve-hour-time now)
+        end-str (h/twelve-hour-time end)]
 
-           [:div.col-start-1 "Start: " start-str]
-           [:div.col-start-2.text-center "Now: " (h/time-string :hours-minutes-seconds now)]
-           [:div.col-start-3.text-right "End: " end-str]
-           ]
-          [:div.grid.grid-cols-3.p-6.m-4.rounded-xl.shadow-lg.items-center
-           [:div.col-start-1.col-span-2 [:h2.font-bold name " for " length-str " min"]]
-           [:div.col-start-3.text-right [:button.w-6.h-6.rounded.bg-cyan-200.hover:bg-blue-700
-                                         {:on-click #(re-frame/dispatch [:kill-timer id])}
-                                         "X"]]
-           [:div.col-start-1.col-span-2 [:h2.font-bold "Class Starts at " start-str" in " (h/time-string :hours-minutes-seconds (h/time-left now start))]]
-           ]
-      )))
 
-(defn timers []
-  (let [running @(re-frame/subscribe [:running])]
-    [:div
-     (for [t running]
-       ^{:key (:id t)} [timer t])]
+    ;; (if (= time-left-str nil)
+    ;;     (js/alert (str name " has finished"))
+    ;;     )
+
+    (if (h/running? now start end)
+      [:div.grid.grid-cols-3.p-6.m-4.rounded-xl.shadow-lg.items-center
+
+       [:div.col-start-1.col-span-2 [:h2.font-bold name]]
+       [:div.col-start-3.text-right [:button.w-6.h-6.rounded.bg-cyan-200.hover:bg-blue-700
+                                     {:on-click #(re-frame/dispatch [:kill-timer id])}
+                                     "X"]]
+
+       [:div.col-start-1 "Used: " time-used-str]
+       [:div.col-start-2.text-center "Length: " length-str "m"]
+       [:div.col-start-3.text-right "Left: " time-left-str]
+
+       [:div.col-start-1.col-span-3.bg-blue-50
+        [:progress.w-full.h-6 {:value progress-bar-time-used-str :max progress-bar-length-str }]]
+
+       [:div.col-start-1 "Start: " start-str]
+       [:div.col-start-2.text-center "Now: " now-str]
+       [:div.col-start-3.text-right "End: " end-str]
+       ]
+
+      [:div.grid.grid-cols-3.p-6.m-4.rounded-xl.shadow-lg.items-center.bg-gray-300
+       [:div.col-start-1.col-span-2 [:h2.font-bold name]]
+       [:div.col-start-3.text-right [:button.w-6.h-6.rounded.bg-cyan-200.hover:bg-blue-700
+                                     {:on-click #(re-frame/dispatch [:kill-timer id])}
+                                     "X"]]
+       [:div.col-start-1.col-span-2 [:p length-str "m timer" ]]
+       [:div.col-start-1.col-span-2 [:p start-str "-" end-str ]]
+       (if (h/timer-ended? now end)
+         [:div.col-start-1.col-span-2 [:h2.font-bold "Ended " time-left-str " ago"]]
+         [:div.col-start-1.col-span-2 [:h2.font-bold "Starts in " time-used-str]]
+         )]
+      )
     ))
 
-(defn button []
-  [:div
-   [:button.btn.btn-primary.btn-lg.bg-red-500.rounded.rounded.p-6.hover:bg-blue-700
-    {:style {:position "fixed" :bottom "10%" :right "10%"}}
-    "Break!"]])
+;;================================================================================
+
+(defn timers []
+  (let [running @(re-frame/subscribe [:running])
+        now @(re-frame/subscribe [:now])]
+    [:div
+     (for [t running]
+       ^{:key (:id t)} [timer now t])]
+    ))
+
+
+(defn add-class []
+  (let [open-dialog? (reagent/atom false)
+        title  (reagent/atom nil)
+        length  (reagent/atom nil)
+        ]
+    (fn []
+      (if @open-dialog?
+        [:div.fixed.top-0.left-0.w-full.h-full.bg-black.bg-opacity-50.flex.items-center.justify-center
+         [:dialog.grid.grid-cols-2.gap-1.bg-white.p-6.rounded.shadow-lg {:id "my-dialog"
+                                                                         :open @open-dialog?
+                                                                         }
+
+          [:div.col-start-1 [:h2.font-bold "Create a class"]]
+          [:div.col-start-2.text-right [:button.w-6.h-6.rounded.bg-cyan-200
+                                        {:on-click #(reset! open-dialog? false)
+                                         }
+                                        "X"]]
+          [:div.col-start-1 "Title"]
+          [:div.col-start-2 "Length (m)"]
+
+          [:div.col-start-1
+           [:input.mt-1.block.w-full.px-3.py-2.bg-white.border.border-slate-300.rounded-md.text-sm.shadow-sm.placeholder-slate-400.focus:outline-none.focus:border-sky-500.focus:ring-1.focus:ring-sky-500.disabled:bg-slate-50.disabled:text-slate-500.disabled:border-slate-200.disabled:shadow-none.invalid:border-pink-500.invalid:text-pink-600.focus:invalid:border-pink-500.focus:invalid:ring-pink-500
+            {:type "text"
+             ;; :value @title
+             :on-change #(reset! title (-> % .-target .-value))
+             }]]
+
+          [:div.col-start-2       [:input.mt-1.block.w-full.px-3.py-2.bg-white.border.border-slate-300.rounded-md.text-sm.shadow-sm.placeholder-slate-400.focus:outline-none.focus:border-sky-500.focus:ring-1.focus:ring-sky-500.disabled:bg-slate-50.disabled:text-slate-500.disabled:border-slate-200.disabled:shadow-none.invalid:border-pink-500.invalid:text-pink-600.focus:invalid:border-pink-500.focus:invalid:ring-pink-500
+                                   {
+                                    :type "number"
+                                    :value @length
+                                    :on-change #(reset! length (-> % .-target .-value))
+                                    :autocomplete "off"
+                                    ;; :value "tbone"
+                                    ;; :disabled true
+                                    }]]
+
+          [:div.col-span-full.text-right [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
+                                        {:on-click #(do
+                                                      (reset! open-dialog? false)
+                                                      (re-frame/dispatch [:add-timer [@title @length]])
+                                                      )
+                                         }
+                                        "Start"]]]]
+        [:div
+         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded.rounded.p-6.hover:bg-blue-700
+          {:on-click #(reset! open-dialog? true)
+           :style {:position "fixed" :bottom "10%" :right "10%"}}
+          "Add Timer"]]
+        ))))
 
 (defn quick-timers []
   [:div.p-6.m-4.rounded-xl.shadow-lg.items-center.grid.gap-4 {:class (gstyle/grid-auto-fit)}
    [:div.col-span-full [:h2.font-bold "Quick Timers"]]
-   (for [length [
-
-                 ;; {:hours 0 :minutes 0 :seconds 10}
-                 {:hours 0 :minutes 0 :seconds 30}
-                 {:hours 0 :minutes 1 :seconds 0}
-                 {:hours 0 :minutes 1 :seconds 30}
-                 {:hours 0 :minutes 2 :seconds 0}
-                 {:hours 0 :minutes 3 :seconds 0}
-                 {:hours 0 :minutes 4 :seconds 0}
-                 {:hours 0 :minutes 5 :seconds 0}
-                 {:hours 0 :minutes 10 :seconds 0}
-                 {:hours 0 :minutes 15 :seconds 0}
-                 {:hours 0 :minutes 20 :seconds 0}
-                 {:hours 0 :minutes 25 :seconds 0}
-                 {:hours 0 :minutes 30 :seconds 0}
-                 {:hours 0 :minutes 40 :seconds 0}
-                 ]]
-     [:button.bg-white.shadow-md.rounded-full.flex.items-center.justify-center.h-24.w-24.active:bg-blue-700
-      {
-       :on-click #(re-frame/dispatch [:running-quick-timer length])
-       :key (str length)}
-      [:span.text-lg.font-bold (h/time-string :minutes-seconds length)]])])
-
+   (for [length-seconds [5 10 30 60 90 120 180 240 300 600 900 1200 1500 1800 2400]]
+     (let [length (h/seconds->duration length-seconds)]
+       [:button.bg-white.shadow-md.rounded-full.flex.items-center.justify-center.h-24.w-24.active:bg-blue-700
+        {
+         :on-click #(re-frame/dispatch [:running-quick-timer length])
+         :key (str length-seconds)}
+        [:span.text-lg.font-bold (h/duration->minutes-seconds-string length)]]))])
+;;================================================================================
 (defn brain-breaks []
-  [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
-   [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
-   [:div.col-start-4.text-right [:button.w-6.h-6.rounded.bg-cyan-200.hover:bg-blue-700 "X"]]
-   [:div.col-start-1.col-span-3 [:p "Time Since Brain Break: 12 minutes"]]
-   ]
-  )
+  (let [brainbreak @(re-frame/subscribe [:brainbreak])
+        now @(re-frame/subscribe [:now])
+        breaking (:breaking brainbreak)
+        last-str (h/duration->string (h/time-used now (:last brainbreak)))]
+(if breaking
+    [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
+     [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
+     [:div.col-start-1.col-span-3 [:p "Brainbreaking for " last-str ]]
+     [:div.cold-start-3.text-right [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
+                                     {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+                                     "Stop"]]]
+
+    [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
+     [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
+     [:div.col-start-1.col-span-3 [:p "Last brainbreak was " last-str " ago"]]
+     [:div.cold-start-3.text-right [:button.rounded.bg-green-600.py-1.w-full.hover:bg-green-700
+                                     {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+                                     "Start"]]]
+)))
 
 (defn main []
   [:<>
    [timers]
-   ;; [brain-breaks]
+   [brain-breaks]
    [quick-timers]
-   ;; [button]
+   [add-class]
    ]
   )
 
@@ -119,7 +182,6 @@
   [
    ["Timers" :routes/#frontpage]
    ["Classes" :routes/#classes]
-   ;; ["About" :routes/#about]
    ])
 
 (defn route-info [route]

@@ -1,56 +1,20 @@
 (ns classtimertool.db
   (:require
    [re-frame.core :as re-frame]
-   ))
+   [tick.core :as t]
+   [clojure.edn :as c]
+   [cljs.reader :as reader]
+   [classtimertool.toolsreframe :as h]))
 
 (def default-db
   {
-
-   :now {:hours 0 :minutes 0 :seconds 0}
-   :class-timer {
-                 :running-id 1
-                 :running [
-                           ;; {
-                           ;;  :id 2
-                           ;;  :name "10m Quick timer"
-                           ;;  :start "00:00"
-                           ;;  :end "00:10"
-                           ;;  :length 10
-                           ;;  }
-                           ]
-                 :class-id 1
-                 :classes [
-                           ;; {
-                           ;;  :id 1
-                           ;;  :name "God"
-                           ;;  :start {:hours 14 :minutes 00 :seconds 0}
-                           ;;  :end {:hours 15 :minutes 30 :seconds 0}
-                           ;;  :length {:hours 1 :minutes 30 :seconds 0}
-                           ;;  }
-                           ;; {
-                           ;;  :id 2
-                           ;;  :name "Man"
-                           ;;  :start {:hours 15 :minutes 00 :seconds 0}
-                           ;;  :end {:hours 15 :minutes 30 :seconds 0}
-                           ;;  :length {:hours 0 :minutes 30 :seconds 0}
-                           ;;  }
-                           ;;  :id 1
-                           ;;  :name "Year 7 Digital Technology"
-                           ;;  :start-time "12:20"
-                           ;;  :end-time "15:25"
-                           ;;  :length 50
-                           ;;  }
-                           ;; {
-                           ;;  :id 2
-                           ;;  :name "Year 10 Digital Technology"
-                           ;;  :start-time "12:20"
-                           ;;  :end-time "15:25"
-                           ;;  :length 20
-                           ;;  }
-                           ]}
+   :now (h/now)
+   :class-timers {:brainbreak {:last (h/now) :breaking false}
+                  :running-id 1
+                  :running []
+                  :class-id 1
+                  :classes []}
    })
-
-
 
 
 ;; -- Local Storage  ----------------------------------------------------------
@@ -71,22 +35,24 @@
 ;;              ;; read in todos from localstore, and process into a sorted map
 ;;           (into (sorted-map)
 ;;                 (some->> (.getItem js/localStorage ls-key)
-
-
 ;;                          (cljs.reader/read-string)    ;; EDN map -> map
-
 ;;                          )))))
 
 (re-frame/reg-cofx
  :local-store-classes
  (fn [cofx _]
-   ;; put the localstore todos into the coeffect under :local-store-todos
-   (let [data-from-storage (.getItem js/localStorage ls-key)]
+   (let [
+         ;; custom-tag-map {'time/time (fn [x] (t/time x)),
+         ;;                 'time/date-time (fn [x] (t/date-time x))}
+         data-from-storage (.getItem js/localStorage ls-key)]
+        (reader/register-tag-parser! 'time/time (fn [x] (t/time x)))
+        (reader/register-tag-parser! 'time/date-time (fn [x] (t/date-time x)))
      (if-let [parsed-data (when data-from-storage
-                             (try
-                               (cljs.reader/read-string data-from-storage)
-                               (catch js/Error e
-                                 (js/console.error "Error parsing data from local storage:" e)
-                                 nil)))]
+                            (try
+                              (cljs.reader/read-string data-from-storage)
+                              ;; (c/read-string {:readers custom-tag-map} data-from-storage)
+                              (catch js/Error e
+                                (js/console.error "Error parsing data from local storage:" e)
+                                nil)))]
        (assoc cofx :local-store-classes (into (sorted-map) parsed-data))
        cofx))))
