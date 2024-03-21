@@ -47,6 +47,13 @@
 
 ;;=================================
 ;; LAYOUT SYSTEM
+(defclass classes-layout []
+  {
+   :display "grid"
+   :grid-template (str "1fr 1fr 1fr 1fr 5px");;repeat(" rows ", 1fr
+   :grid-gap "2px"
+  })
+
 (defclass grid-layout [columns rows]
   {
    :display "grid"

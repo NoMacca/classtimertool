@@ -11,8 +11,8 @@
    ))
 
 (defn class-layout [{:keys [id name start end]}]
-  [:div.grid.grid-cols-5.gap-1
-   [:div.col-start-1.col-span-2
+  [:div.grid.grid-cols-5.gap-1 ;;({:class gstyle/classes-layout)}
+    [:div.col-start-1.col-span-2.whitespace-normal
     [:a.col-span-full {:href (rtfe/href :routes/#frontpage)}
      [:button.text-blue-500.underline.hover:text-blue-700
       {
@@ -28,7 +28,7 @@
 (defn class-list []
 (let [classes @(re-frame/subscribe [:classes])]
 (if (seq classes)
- [:div.grid.grid-cols-5.p-6.m-4.rounded-xl.shadow-lg.items-center
+ [:div.grid.rounded-xl.shadow-lg.items-center.p-6.m-4.grid-cols-5
   [:div.col-start-1.col-span-4 [:h2.font-bold "Classes"]]
   [:div.col-start-5.text-right [:button.rounded.bg-red-600.px-4
                                 {:on-click #(re-frame/dispatch [:sort])}

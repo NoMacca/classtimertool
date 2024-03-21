@@ -31,16 +31,16 @@
       "12:00 NOON"
 
       (>= hour 13)
-      (gstring/format "%02d:%02dPM" (- hour 12) minute)
+      (gstring/format "%02d:%02d PM" (- hour 12) minute)
 
       (>= hour 12)
-      (gstring/format "%02d:%02dPM" hour minute)
+      (gstring/format "%02d:%02d PM" hour minute)
 
       (>= hour 1)
-      (gstring/format "%02d:%02dAM" hour minute)
+      (gstring/format "%02d:%02d AM" hour minute)
 
       (= hour 0)
-      (gstring/format "12:%02dAM" minute))))
+      (gstring/format "12:%02d AM" minute))))
 
 ;; ;; test
 ;; (twelve-hour-time (t/time))

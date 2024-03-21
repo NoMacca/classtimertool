@@ -18,7 +18,7 @@
 
 
 ;; -- Local Storage  ----------------------------------------------------------
-(def ls-key "local-store-classes")                         ;; localstore key
+(def ls-key "ls-classes")                         ;; localstore key
 
 (defn classtimertool->local-store
   "Puts todos into localStorage"
