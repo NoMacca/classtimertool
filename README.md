@@ -1,7 +1,8 @@
 # Class Timer
 
 > The trouble is, you think you have time.
-> Fake Buddha Quote
+
+> -- Fake Buddha Quote
 
 ## Description
 For teachers, time management is important. It seems straightforward, but it becomes difficult during a lesson when you have million other things to keep track of. Class timer takes away a little brain work from time tracking, allowing you to use the brain space for other things, like making sure Jill does not flick snot on James. 
