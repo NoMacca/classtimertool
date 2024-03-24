@@ -19,7 +19,7 @@ https://nomacca.github.io/classtimertool/
 
 ### Basic Workflow
 1. Add your classes on the Classes page.
-2. Before the lesson start, select your next class on the Classes page.
+2. Before the lesson starts, select your next class on the Classes page.
 3. During the class, dynamically choose quick timers or add custom timers. 
 4. Use the brain break timer to check how long it has been since the last one.
 
