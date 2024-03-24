@@ -55,12 +55,11 @@
         name]]]
    [:td (str (h/twelve-hour-time start) " - " (h/twelve-hour-time end))]
    [:td (str (h/duration->minutes->string (h/duration start end)) " mins")]
-   [:td [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]])
+   [:td [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border.justify-self-end {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]])
 
 (defn class-list []
 (let [classes @(re-frame/subscribe [:classes])]
 (if (seq classes)
-
 
   [:div.grid.rounded-xl.shadow-lg.items-center.p-6.m-4
 
@@ -76,7 +75,7 @@
      [:th "Name"]
      [:th "Time"]
      [:th "Length"]
-     [:th "Length"]
+     [:th ""]
      ]
     (for [class  classes]
       ^{:key (:id class)} [class-layout class])

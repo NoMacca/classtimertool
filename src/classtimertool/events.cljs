@@ -176,9 +176,17 @@
  :delete-all-running
  interceptors
  (fn [db _]
+   ;; (js/alert "hello")
      (-> db
-         (update :running-id 1) ;;(inc (:running-id db))
-         (update  :running []))))
+         (assoc :running-id 1)
+         (assoc  :running []))))
+
+
+;; (def fake-map {:running-id 12
+;;                :running [{:id 1 :name "hello"}
+;;                          {:id 2 :name "bye"}]}
+;;   )
+;; (assoc fake-map :running-id 1)
 
 
 (defn remove-map-by-id [id data]

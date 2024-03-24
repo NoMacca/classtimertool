@@ -127,17 +127,21 @@
                                                       )
                                          }
                                         "Start"]]]]
-        [:div
-         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded.rounded.p-6.hover:bg-blue-700
+        [:div.grid.grid-cols-2.gap-2
+           {:style {:position "fixed" :bottom "10%" :right "10%"}}
+         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded.rounded.p-6.hover:bg-red-700
+          {:on-click #(re-frame/dispatch [:delete-all-running])}
+          "Delete All"]
+         [:button.btn.btn-primary.btn-lg.bg-blue-500.rounded.rounded.p-6.hover:bg-blue-700
           {:on-click #(reset! open-dialog? true)
-           :style {:position "fixed" :bottom "10%" :right "10%"}}
+           ;; :style {:position "fixed" :bottom "20%" :right "30%"}
+           }
           "Add Timer"]]
         ))))
 
 (defn quick-timers []
 
   (let [quick-timers-display (reagent/atom false)]
-
     (fn []
       (if @quick-timers-display
         [:div.p-6.m-4.rounded-xl.shadow-lg.items-center.grid.gap-4 {:class (gstyle/grid-auto-fit)}
