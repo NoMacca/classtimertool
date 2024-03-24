@@ -146,7 +146,26 @@
   [time end]
   (t/> time end))
 
-(timer-ended? n_ex e_ex)
+
+(defn timer-ended-for-hour?
+  "Used to determine that a timer has finished for one hour"
+  [time end]
+  (t/< (t/between time end) (t/new-duration
+                             -10 :seconds
+                             ;; -60 :minutes
+                             ))
+  )
+
+;; (def n_ex (-> (t/time "13:40")
+;;      (t/on (t/date))))
+
+;; (def e_ex (-> (t/time "13:30")
+;;      (t/on (t/date))))
+
+;; (t/< (t/between n_ex e_ex) (t/new-duration -60 :minutes))
+
+
+(timer-ended-for-hour? n_ex e_ex)
 
 (defn running?
   [now start end]

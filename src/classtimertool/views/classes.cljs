@@ -43,7 +43,6 @@
 ;;      ^{:key (:id class)} [class-layout_grid class])
 ;;    ]])))
 
-
 (defn class-layout [{:keys [id name start end]}]
     [:tr
      [:td [:a.col-span-full {:href (rtfe/href :routes/#frontpage)}
@@ -64,6 +63,14 @@
 
 
   [:div.grid.rounded-xl.shadow-lg.items-center.p-6.m-4
+
+   [:div.grid.grid-cols-2
+    [:div.col-start-1 [:h2.font-bold "Classes"]]
+    [:div.col-start-2.justify-self-end [:button.rounded.bg-red-600.px-4
+           {:on-click #(re-frame/dispatch [:sort])}
+           "sort"]]]
+   [:br]
+
    [:table.table-fixed
     [:tr
      [:th "Name"]
@@ -74,8 +81,6 @@
     (for [class  classes]
       ^{:key (:id class)} [class-layout class])
     ]
-
-
    ]
 
    ;; [:div.col-start-1.col-span-4 [:h2.font-bold "Classes"]]
@@ -90,20 +95,7 @@
    ;; [:div.col-span-full
    ;;  (for [class  classes]
    ;;    ^{:key (:id class)} [class-layout class])
-
-)
-)
-)
-
-
-
-
-
-
-
-
-
-
+)))
 
 ;;=========================================================================
 

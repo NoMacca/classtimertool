@@ -121,7 +121,6 @@
      (-> db
          (assoc :brainbreak {:last now :breaking (not (:breaking (:brainbreak db)))}))))
 
-
 (re-frame/reg-event-db
  :sort
  interceptors
@@ -131,11 +130,11 @@
          new-classes (h/sort-classes classes)
          new-class-id (count new-classes)
          ]
-   (-> db
-       (assoc :class-id  new-class-id)
-       (assoc-in [:classes] new-classes)
-       )
-)))
+     (-> db
+         (assoc :class-id  new-class-id)
+         (assoc-in [:classes] new-classes)
+         )
+     )))
 
 (re-frame/reg-event-db :now (sdb [:now]))
 
@@ -173,6 +172,13 @@
                                 ))))))
 
 
+(re-frame/reg-event-db
+ :delete-all-running
+ interceptors
+ (fn [db _]
+     (-> db
+         (update :running-id 1) ;;(inc (:running-id db))
+         (update  :running []))))
 
 
 (defn remove-map-by-id [id data]
