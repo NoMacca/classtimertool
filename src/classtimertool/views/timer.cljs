@@ -128,11 +128,11 @@
                                          }
                                         "Start"]]]]
         [:div.grid.grid-cols-2.gap-2
-           {:style {:position "fixed" :bottom "10%" :right "10%"}}
-         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded.rounded.p-6.hover:bg-red-700
+           {:style {:position "fixed" :bottom "5%" :right "5%"}}
+         [:button.btn.btn-primary.btn-lg.rounded-full.border-4.p-6.hover:bg-red-700
           {:on-click #(re-frame/dispatch [:delete-all-running])}
           "Delete All"]
-         [:button.btn.btn-primary.btn-lg.bg-blue-500.rounded.rounded.p-6.hover:bg-blue-700
+         [:button.btn.btn-primary.btn-lg.bg-blue-500.rounded-full.p-6.hover:bg-blue-700
           {:on-click #(reset! open-dialog? true)
            ;; :style {:position "fixed" :bottom "20%" :right "30%"}
            }

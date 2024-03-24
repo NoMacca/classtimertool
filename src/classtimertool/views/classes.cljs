@@ -154,9 +154,9 @@
                                          }
                                         "Add"]]]]
         [:div
-         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded.rounded.p-6.hover:bg-blue-700
+         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded-full.p-6.hover:bg-blue-700
           {:on-click #(reset! open-dialog? true)
-           :style {:position "fixed" :bottom "10%" :right "10%"}}
+           :style {:position "fixed" :bottom "5%" :right "5%"}}
           "Create Class"]]
         ))))
 
