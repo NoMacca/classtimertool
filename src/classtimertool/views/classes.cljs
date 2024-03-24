@@ -10,38 +10,100 @@
    [reitit.frontend.easy :as rtfe]
    ))
 
+;; (defn class-layout_grid [{:keys [id name start end]}]
+;;   [:div.grid.grid-cols-5.gap-1 ;;({:class gstyle/classes-layout)}
+;;     [:div.col-start-1.col-span-2.whitespace-normal
+;;     [:a.col-span-full {:href (rtfe/href :routes/#frontpage)}
+;;      [:button.text-blue-500.underline.hover:text-blue-700
+;;       {
+;;        :id id
+;;        :href (rtfe/href :routes/#frontpage)
+;;        :on-click #(re-frame/dispatch [:run-class id])
+;;        }
+;;       name]]]
+;;    [:div.col-start-3 (str (h/twelve-hour-time start) " - " (h/twelve-hour-time end))]
+;;    [:div.col-start-4 (str (h/duration->minutes->string (h/duration start end)) " mins")]
+;;    [:div.col-start-5.flex.items-center.justify-end [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]])
+
+;; (defn class-list_grid []
+;; (let [classes @(re-frame/subscribe [:classes])]
+;; (if (seq classes)
+;;  [:div.grid.rounded-xl.shadow-lg.items-center.p-6.m-4.grid-cols-5
+;;   [:div.col-start-1.col-span-4 [:h2.font-bold "Classes"]]
+;;   [:div.col-start-5.text-right [:button.rounded.bg-red-600.px-4
+;;                                 {:on-click #(re-frame/dispatch [:sort])}
+;;                                 "sort"]]
+;;   [:div.col-start-1.col-span-2 "Name"]
+;;   [:div.col-start-3 "Time"]
+;;   [:div.col-start-4 "Length"]
+;;   [:div.col-start-5 ""]
+
+;;   [:div.col-span-full
+;;    (for [class  classes]
+;;      ^{:key (:id class)} [class-layout_grid class])
+;;    ]])))
+
+
 (defn class-layout [{:keys [id name start end]}]
-  [:div.grid.grid-cols-5.gap-1 ;;({:class gstyle/classes-layout)}
-    [:div.col-start-1.col-span-2.whitespace-normal
-    [:a.col-span-full {:href (rtfe/href :routes/#frontpage)}
-     [:button.text-blue-500.underline.hover:text-blue-700
-      {
-       :id id
-       :href (rtfe/href :routes/#frontpage)
-       :on-click #(re-frame/dispatch [:run-class id])
-       }
-      name]]]
-   [:div.col-start-3 (str (h/twelve-hour-time start) " - " (h/twelve-hour-time end))]
-   [:div.col-start-4 (str (h/duration->minutes->string (h/duration start end)) " mins")]
-   [:div.col-start-5.flex.items-center.justify-end [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]])
+    [:tr
+     [:td [:a.col-span-full {:href (rtfe/href :routes/#frontpage)}
+       [:button.text-blue-500.underline.hover:text-blue-700
+        {
+         :id id
+         :href (rtfe/href :routes/#frontpage)
+         :on-click #(re-frame/dispatch [:run-class id])
+         }
+        name]]]
+   [:td (str (h/twelve-hour-time start) " - " (h/twelve-hour-time end))]
+   [:td (str (h/duration->minutes->string (h/duration start end)) " mins")]
+   [:td [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]])
 
 (defn class-list []
 (let [classes @(re-frame/subscribe [:classes])]
 (if (seq classes)
- [:div.grid.rounded-xl.shadow-lg.items-center.p-6.m-4.grid-cols-5
-  [:div.col-start-1.col-span-4 [:h2.font-bold "Classes"]]
-  [:div.col-start-5.text-right [:button.rounded.bg-red-600.px-4
-                                {:on-click #(re-frame/dispatch [:sort])}
-                                "sort"]]
-  [:div.col-start-1.col-span-2 "Name"]
-  [:div.col-start-3 "Time"]
-  [:div.col-start-4 "Length"]
-  [:div.col-start-5 ""]
 
-  [:div.col-span-full
-   (for [class  classes]
-     ^{:key (:id class)} [class-layout class])
-   ]])))
+
+  [:div.grid.rounded-xl.shadow-lg.items-center.p-6.m-4
+   [:table.table-fixed
+    [:tr
+     [:th "Name"]
+     [:th "Time"]
+     [:th "Length"]
+     [:th "Length"]
+     ]
+    (for [class  classes]
+      ^{:key (:id class)} [class-layout class])
+    ]
+
+
+   ]
+
+   ;; [:div.col-start-1.col-span-4 [:h2.font-bold "Classes"]]
+   ;; [:div.col-start-5.text-right [:button.rounded.bg-red-600.px-4
+   ;;                               {:on-click #(re-frame/dispatch [:sort])}
+   ;;                               "sort"]]
+   ;; [:div.col-start-1.col-span-2 "Name"]
+   ;; [:div.col-start-3 "Time"]
+   ;; [:div.col-start-4 "Length"]
+   ;; [:div.col-start-5 ""]
+
+   ;; [:div.col-span-full
+   ;;  (for [class  classes]
+   ;;    ^{:key (:id class)} [class-layout class])
+
+)
+)
+)
+
+
+
+
+
+
+
+
+
+
 
 ;;=========================================================================
 

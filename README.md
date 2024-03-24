@@ -9,7 +9,7 @@ For teachers, time management is important. It seems straightforward, but it bec
 
 ## Problem
 There are two problems that manual time tracking can cause:
-1. Stop you from doing other things. Manuel time tracking can divert your attention and mental resources away from other tasks, such as class content delivery, student engagement, and behaviour management,
+1. Stop you from doing other things. Manual time tracking can divert your attention and mental resources away from other tasks, such as class content delivery, student engagement, and behaviour management,
 2. Poor time management. You might accidentally let a activity overrun or run out of time. 
 
 ## Approach
