@@ -23,7 +23,7 @@
 
         ;;Above progress bar
         time-used-str (h/duration->string time-used)
-        length-str (h/duration->minutes->string length)
+        length-str (h/duration->minutes-seconds-string length)
         time-left-str (h/duration->string time-left)
 
         ;; For progress bar
@@ -49,7 +49,7 @@
                                      "X"]]
 
        [:div.col-start-1 "Used: " time-used-str]
-       [:div.col-start-2.text-center "Length: " length-str "m"]
+       [:div.col-start-2.text-center "Length: " length-str]
        [:div.col-start-3.text-right "Left: " time-left-str]
 
        [:div.col-start-1.col-span-3.bg-blue-50
@@ -147,26 +147,42 @@
          :key (str length-seconds)}
         [:span.text-lg.font-bold (h/duration->minutes-seconds-string length)]]))])
 ;;================================================================================
+
+(defn brain-break [brainbreak now]
+  (let [breaking (:breaking brainbreak)
+       last-str (h/duration->string (h/time-used now (:last brainbreak)))]
+    [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
+     [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
+     [:div.col-start-1.col-span-3 [:p "Brainbreaking for " last-str ]]
+     [:div.cold-start-3.text-right [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
+                                    {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+                                    "Stop"]]])
+  )
+
 (defn brain-breaks []
   (let [brainbreak @(re-frame/subscribe [:brainbreak])
         now @(re-frame/subscribe [:now])
         breaking (:breaking brainbreak)
         last-str (h/duration->string (h/time-used now (:last brainbreak)))]
-(if breaking
-    [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
-     [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
-     [:div.col-start-1.col-span-3 [:p "Brainbreaking for " last-str ]]
-     [:div.cold-start-3.text-right [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
-                                     {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
-                                     "Stop"]]]
 
-    [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
-     [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
-     [:div.col-start-1.col-span-3 [:p "Last brainbreak was " last-str " ago"]]
-     [:div.cold-start-3.text-right [:button.rounded.bg-green-600.py-1.w-full.hover:bg-green-700
-                                     {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
-                                     "Start"]]]
-)))
+    (if breaking
+      [brain-break brainbreak now]
+      [brain-break brainbreak now]
+
+      ;; [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
+      ;;  [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
+      ;;  [:div.col-start-1.col-span-3 [:p "Brainbreaking for " last-str ]]
+      ;;  [:div.cold-start-3.text-right [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
+      ;;                                 {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+      ;;                                 "Stop"]]]
+
+      ;; [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
+      ;;  [:div.col-start-1.col-span-3 [:h2.font-bold "Brain Breaks"]]
+      ;;  [:div.col-start-1.col-span-3 [:p "Last brainbreak was " last-str " ago"]]
+      ;;  [:div.cold-start-3.text-right [:button.rounded.bg-green-600.py-1.w-full.hover:bg-green-700
+      ;;                                 {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+      ;;                                 "Start"]]]
+      )))
 
 (defn main []
   [:<>
