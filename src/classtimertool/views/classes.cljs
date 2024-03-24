@@ -37,11 +37,31 @@
   [:div.col-start-3 "Time"]
   [:div.col-start-4 "Length"]
   [:div.col-start-5 ""]
-  [:div.col-span-full
+
+
    (for [class  classes]
-     ^{:key (:id class)} [class-layout class])
-  ]]))
- )
+     (let [{:keys [id name start end]} class]
+    [:div.col-start-1.col-span-2.whitespace-normal
+    [:a.col-span-full {:href (rtfe/href :routes/#frontpage)}
+     [:button.text-blue-500.underline.hover:text-blue-700
+      {
+       :id id
+       :href (rtfe/href :routes/#frontpage)
+       :on-click #(re-frame/dispatch [:run-class id])
+       }
+      name]]]
+   [:div.col-start-3 (str (h/twelve-hour-time start) " - " (h/twelve-hour-time end))]
+   [:div.col-start-4 (str (h/duration->minutes->string (h/duration start end)) " mins")]
+   [:div.col-start-5.flex.items-center.justify-end [:button.rounded.bg-blue-600.text-white.px-4.shadow-md.border {:on-click #(re-frame/dispatch [:delete-class id])} "x"]]
+)
+)
+  ;; [:div.col-span-full
+  ;;  (for [class  classes]
+  ;;    ^{:key (:id class)} [class-layout class])
+  ;;  ]
+]
+  )
+ ))
 
 ;;=========================================================================
 
