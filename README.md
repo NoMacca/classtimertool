@@ -4,12 +4,12 @@
 > -- Fake Buddha Quote
 
 ## Description
-For teachers, time management is important. It is straightforward enough but it can become difficult during a lesson when you have a million other things to keep track of. This simple tool helps you save brainpower, so you can focus on other important things, like making sure Jill does not flick snot on James.
+For teachers, time management is important. It is straightforward enough but it can become difficult during a lesson when you have a million other things to keep track of. This simple tool helps you save brainpower, so you can focus on other important things.
 
 ## Problem
-There are two problems that manual time tracking can cause
-1. Stopping you from doing other things. Manual time tracking can divert your attention and mental energy away from other tasks, such as class content delivery, student engagement, and behaviour management.
-2. Time management slips. You might accidentally let an activity overrun or run out of time for an important activity. 
+There are two problems with keeping track of time in your head
+1. Distraction. Keeping track of time can divert your attention and mental energy away from other tasks, such as class content delivery, student engagement, and behaviour management.
+2. Slips in time management. You might accidentally let an activity overrun or run out of time for an important activity. 
 
 ## Approach
 This application helps you track time during the class. 
