@@ -180,6 +180,12 @@
 
 ;; (end-time s_ex (t/new-duration 2 :hours))
 
+
+(defn started?
+  [now start]
+  (t/>= now start))
+
+
 ;;================================================
 
 (def example_class (t.i/new-interval
@@ -225,12 +231,33 @@
 
 (defn seconds->duration
 [seconds]
-  (t/new-duration seconds :seconds) )
+  (t/new-duration seconds :seconds))
+
+(defn duration->seconds
+  [duration]
+  (t/seconds duration))
+
 
 (defn minutes->duration
-[minutes]
+  [minutes]
   (t/new-duration minutes :minutes) )
 ;; (duration s_ex e_ex)
+
+(defn calculate-color [seconds]
+  (let [max-seconds 1200
+        percent (float (/ seconds max-seconds))
+        red (int (* percent 255))
+        green (- 255 red)]
+    ;; (js/console.log
+    ;; (str "rgb(" red ", " green ", 0)"))
+    (str "rgb(" red ", " green ", 0)")))
+
+(calculate-color 0)
+;; => "rgb(0, 255, 0)"
+
+(calculate-color 1200)
+;; => "rgb(255, 0, 0)"
+
 ;;===============================================
 ;; MANAGING CLASSES
 ;;===============================================

@@ -28,3 +28,6 @@ This is a free software project distributed under the terms of the GNU General P
 
 ## Feedback 
 If you use this timer, I would be interested in any feedback. 
+
+# TODO
+1. Add brain breaks to select

@@ -169,28 +169,42 @@
     (fn []
       (let [brainbreak @(re-frame/subscribe [:brainbreak])
             now @(re-frame/subscribe [:now])
+
             breaking (:breaking brainbreak)
-            last-str (h/duration->string (h/time-used now (:last brainbreak)))]
+            last-str (h/duration->string
+                      (h/time-used now (:last brainbreak)))
+            time-used (h/duration->seconds (h/time-used now (:last brainbreak)))
+            ]
 
         (if @brain-breaks-display
           [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
            [:div.col-start-1.col-span-3 [:button.font-bold.text-blue-500
                                          {:on-click #(reset! brain-breaks-display false)}
                                          "Brain Breaks"]]
-           [:div.col-start-1.col-span-3 [:p
-                                         (if breaking
-                                           (str "Breaking for " last-str)
-                                           (str "Last brainbreak was " last-str " ago" ))
-                                         ]]
+
+           (if (h/started? now (:last brainbreak))
+           [:<>
+            [:div.col-start-1.col-span-3 [:p
+                                          (if breaking
+                                            (str "Breaking for " last-str)
+                                            (str "Last brainbreak was " last-str " ago" ))
+                                          ]]
            [:div.cold-start-3.text-right
             (if breaking
               [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
                {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
                "Stop"]
-              [:button.rounded.bg-green-600.py-1.w-full.hover:bg-green-700
-               {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
-               "Start"]
+              [:button.rounded.py-1.w-full ;;bg-green-600.hover:bg-green-700
+               {:style {:background-color (h/calculate-color time-used)}
+                :on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+               (str  "Start")]
               )]]
+
+           [:div.col-start-1.col-span-3
+            [:p "Class has not started yet"]]
+)
+
+           ]
 
           [:div.grid.grid-cols-4.p-6.m-4.rounded-xl.shadow-lg.items-center
            [:div.col-start-1.col-span-3 [:button.font-bold.text-blue-500
