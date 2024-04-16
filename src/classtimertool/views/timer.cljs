@@ -192,8 +192,8 @@
            [:div.cold-start-3.text-right
             (if breaking
               [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
-               {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
-               "Stop"]
+                 {:on-click #(re-frame/dispatch [:toggle-brainbreak now])}
+                 "Stop"]
               [:button.rounded.py-1.w-full ;;bg-green-600.hover:bg-green-700
                {:style {:background-color (h/calculate-color time-used)}
                 :on-click #(re-frame/dispatch [:toggle-brainbreak now])}
@@ -201,8 +201,12 @@
               )]]
 
            [:div.col-start-1.col-span-3
-            [:p "Class has not started yet"]]
-)
+            [:p "Class has not started yet"]])
+
+           [:button.rounded.py-1.w-full.bg-gray-200
+            {:on-click #(js/alert "feature to be added")}
+            "Examples"]
+
 
            ]
 
@@ -211,6 +215,8 @@
                                          {:on-click #(reset! brain-breaks-display true)}
                                          "Brain Breaks"]]]
           )
+
+
         ))))
 
 (defn main []

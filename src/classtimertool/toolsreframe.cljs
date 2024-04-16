@@ -252,10 +252,10 @@
     ;; (str "rgb(" red ", " green ", 0)"))
     (str "rgb(" red ", " green ", 0)")))
 
-(calculate-color 0)
+;; (calculate-color 0)
 ;; => "rgb(0, 255, 0)"
 
-(calculate-color 1200)
+;; (calculate-color 1200)
 ;; => "rgb(255, 0, 0)"
 
 ;;===============================================
