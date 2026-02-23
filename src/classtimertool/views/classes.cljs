@@ -102,63 +102,56 @@
   (let [open-dialog? (reagent/atom false)
         title  (reagent/atom nil)
         start  (reagent/atom nil)
-        end  (reagent/atom nil)
-        ]
+        end    (reagent/atom nil)]
     (fn []
       (if @open-dialog?
         [:div.fixed.top-0.left-0.w-full.h-full.bg-black.bg-opacity-50.flex.items-center.justify-center
-         [:dialog.grid.grid-cols-2.gap-1.bg-white.p-6.rounded.shadow-lg {:id "my-dialog"
-                                                                         :open @open-dialog?
-                                                                         }
+         [:dialog.bg-white.p-6.rounded-xl.shadow-xl.w-full.max-w-sm
+          {:open @open-dialog?}
 
-          [:div.col-start-1 [:h2.font-bold "Create a class"]]
-          [:div.col-start-2.text-right [:button.w-6.h-6.rounded.bg-cyan-200
-                                        {:on-click #(reset! open-dialog? false)
-                                         }
-                                        "X"]]
-          [:div.col-span-full "Name:"]
-          [:div.col-span-full
-           [:input.mt-1.block.w-full.px-3.py-2.bg-white.border.border-slate-300.rounded-md.text-sm.shadow-sm.placeholder-slate-400.focus:outline-none.focus:border-sky-500.focus:ring-1.focus:ring-sky-500.disabled:bg-slate-50.disabled:text-slate-500.disabled:border-slate-200.disabled:shadow-none.invalid:border-pink-500.invalid:text-pink-600.focus:invalid:border-pink-500.focus:invalid:ring-pink-500
+          ;; Header
+          [:div.flex.justify-between.items-center.mb-5
+           [:h2.font-bold.text-lg "Create a class"]
+           [:button.w-7.h-7.rounded-full.bg-gray-100.hover:bg-gray-200.text-gray-500.text-sm.font-bold.flex.items-center.justify-center.transition
+            {:on-click #(reset! open-dialog? false)}
+            "✕"]]
+
+          ;; Class name
+          [:div.mb-4
+           [:label.block.text-sm.font-medium.text-gray-700.mb-1 "Class name"]
+           [:input.block.w-full.px-3.py-2.border.border-gray-300.rounded-lg.text-sm.shadow-sm.placeholder-gray-400.focus:outline-none.focus:border-blue-500.focus:ring-1.focus:ring-blue-500
             {:type "text"
-             ;; :value @title
-             :on-change #(reset! title (-> % .-target .-value))
-             }]]
+             :placeholder "e.g. Maths"
+             :on-change #(reset! title (-> % .-target .-value))}]]
 
-          [:div.col-start-1 "Start"]
-          [:div.col-start-2 "End"]
+          ;; Start / End side by side
+          [:div.grid.grid-cols-2.gap-3.mb-6
+           [:div
+            [:label.block.text-sm.font-medium.text-gray-700.mb-1 "Start time"]
+            [:input.block.w-full.px-3.py-2.border.border-gray-300.rounded-lg.text-sm.shadow-sm.focus:outline-none.focus:border-blue-500.focus:ring-1.focus:ring-blue-500
+             {:type "time"
+              :value @start
+              :on-change #(reset! start (-> % .-target .-value))
+              :autocomplete "off"}]]
+           [:div
+            [:label.block.text-sm.font-medium.text-gray-700.mb-1 "End time"]
+            [:input.block.w-full.px-3.py-2.border.border-gray-300.rounded-lg.text-sm.shadow-sm.focus:outline-none.focus:border-blue-500.focus:ring-1.focus:ring-blue-500
+             {:type "time"
+              :value @end
+              :on-change #(reset! end (-> % .-target .-value))}]]]
 
-          [:div.col-start-1       [:input.mt-1.block.w-full.px-3.py-2.bg-white.border.border-slate-300.rounded-md.text-sm.shadow-sm.placeholder-slate-400.focus:outline-none.focus:border-sky-500.focus:ring-1.focus:ring-sky-500.disabled:bg-slate-50.disabled:text-slate-500.disabled:border-slate-200.disabled:shadow-none.invalid:border-pink-500.invalid:text-pink-600.focus:invalid:border-pink-500.focus:invalid:ring-pink-500
-                                   {
-                                    :type "time"
-                                    :value @start
-                                    :on-change #(reset! start (-> % .-target .-value))
-                                    :autocomplete "off"
-                                    ;; :value "tbone"
-                                    ;; :disabled true
-                                    }]]
+          ;; Submit
+          [:button.w-full.rounded-lg.bg-blue-600.py-2.hover:bg-blue-700.text-white.font-medium.transition
+           {:on-click #(do
+                         (reset! open-dialog? false)
+                         (re-frame/dispatch [:add-class [@title @start @end]]))}
+           "Add Class"]]]
 
-          [:div.col-start-2       [:input.mt-1.block.w-full.px-3.py-2.bg-white.border.border-slate-300.rounded-md.text-sm.shadow-sm.placeholder-slate-400.focus:outline-none.focus:border-sky-500.focus:ring-1.focus:ring-sky-500.disabled:bg-slate-50.disabled:text-slate-500.disabled:border-slate-200.disabled:shadow-none.invalid:border-pink-500.invalid:text-pink-600.focus:invalid:border-pink-500.focus:invalid:ring-pink-500
-                                   {
-                                    :type "time"
-                                    ;; :value "tbone"
-                                    :value @end
-                                    :on-change #(reset! end (-> % .-target .-value))
-                                    ;; :disabled true
-                                    }]]
-
-          [:div.col-start-2.text-right [:button.rounded.bg-blue-600.py-1.w-full.hover:bg-blue-700
-                                        {:on-click #(do
-                                                      (reset! open-dialog? false)
-                                                      (re-frame/dispatch [:add-class [@title @start @end]])
-                                                      )
-                                         }
-                                        "Add"]]]]
         [:div
-         [:button.btn.btn-primary.btn-lg.bg-red-500.rounded-full.p-6.hover:bg-blue-700
+         [:button.bg-blue-600.rounded-full.p-6.hover:bg-blue-700.text-white.font-medium.shadow-md.transition
           {:on-click #(reset! open-dialog? true)
            :style {:position "fixed" :bottom "5%" :right "5%"}}
-          "Create Class"]]
-        ))))
+          "Create Class"]]))))
 
 (defn main []
 ;; (let [app-db @(re-frame/subscribe [:app-db])]

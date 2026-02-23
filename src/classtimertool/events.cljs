@@ -25,8 +25,8 @@
  [(re-frame/inject-cofx :local-store-classes)]
  (fn [{:keys [db local-store-classes]} _]
    (if (empty? local-store-classes)
-     {:db db/default-db}
-   {:db (assoc db/default-db :class-timers local-store-classes)}))
+     {:db db/default-db} 
+     {:db (assoc db/default-db :class-timers local-store-classes)}))
 )
 
 ;;===============================================================================
