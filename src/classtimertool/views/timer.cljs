@@ -226,6 +226,6 @@
     [:div
      [:nav.bg-white.shadow-sm.p-4
       [:div.container.mx-auto.flex.justify-between.items-center
-       [:div.text-gray-900.font-bold.text-lg "Class Timer"]
+       [:img {:src "ln-logo.png" :alt "Learning Now" :class "h-8"}]
        [vt/navigation toolbar-items]]]
      [show-panel @active-route]]))
